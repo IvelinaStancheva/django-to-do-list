@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Структура хранения данных в базе данных
+# Структура съхранения дан. в бд
 class Task(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, null=True, blank=True)
@@ -10,11 +10,11 @@ class Task(models.Model):
     complete = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
 
-# Возвращаем строковое представление задачи в виде заголовка
+# Връщаме текстово представяне на задачата под формата на заглавие
     def __str__(self):
         return self.title
 
-# Определяем класс, в котором сортируем задачи по статусу выполнения
+# Определяме клас, в който сортираме задачите по статуса на изпълнение
     class Meta:
         ordering = ['complete']
 
