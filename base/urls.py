@@ -2,7 +2,7 @@ from django.urls import path
 from .views import TaskList, TaskDetail, TaskCreate, TaskUpdate, DeleteView, CustomLoginView, RegistrationPage
 from django.contrib.auth.views import LogoutView
 
-
+# URL-маршруты, определённые в приложении для управления задачами
 urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
