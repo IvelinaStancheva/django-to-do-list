@@ -12,7 +12,7 @@ from django.contrib.auth import login
 from .models import Task
 
 
-# Отображение страницы входа
+
 class CustomLoginView(LoginView):
     template_name = 'base/login.html'
     fields = '__all__'
@@ -22,39 +22,39 @@ class CustomLoginView(LoginView):
         return reverse_lazy('tasks')
 
 
-# Отображение страницы с регистрацией
+
 class RegistrationPage(FormView):
     template_name = 'base/register.html'
     form_class = UserCreationForm
     redirect_authenticated_user = True
     success_url = reverse_lazy('tasks')
 
-    # Сохранение пользователя при успешной регистрации
+
     def form_valid(self, form):
         user = form.save()
         if user is None:
             login(self.request, user)
         return super(RegistrationPage, self).form_valid(form)
 
-    # Перенаправление на список задач, если аутентификация уже проведена
+
     def get(self, *args, **kwargs):
         if self.request.user.is_authenticated:
             return redirect('tasks')
         return super(RegistrationPage, self).get(*args, **kwargs)
 
 
-# Отображение списка задач, требующий аутентификацию
+
 class TaskList(LoginRequiredMixin, ListView):
     model = Task
     context_object_name = 'tasks'
 
-    # Фильтрация задач по пользователю
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['tasks'] = context['tasks'].filter(user=self.request.user)
         context['count'] = context['tasks'].filter(complete=False).count()
 
-        # Поиск по названию задачи
+
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
             context['tasks'] = context['tasks'].filter(
@@ -65,14 +65,14 @@ class TaskList(LoginRequiredMixin, ListView):
         return context
 
 
-# Отображение описания задачи
+
 class TaskDetail(LoginRequiredMixin, DetailView):
     model = Task
     context_object_name = 'task'
     template_name = 'base/task.html'
 
 
-# Создания задачи для конкретного пользователя
+
 class TaskCreate(LoginRequiredMixin, CreateView):
     model = Task
     fields = ['title', 'description', 'complete']
@@ -83,14 +83,14 @@ class TaskCreate(LoginRequiredMixin, CreateView):
         return super(TaskCreate, self).form_valid(form)
 
 
-# Обновление задачи
+
 class TaskUpdate(LoginRequiredMixin, UpdateView):
     model = Task
     fields = ['title', 'description', 'complete']
     success_url = reverse_lazy('tasks')
 
 
-# Обработка удаления задачи
+
 class DeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     context_object_name = 'task'
